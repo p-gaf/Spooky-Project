@@ -22,5 +22,10 @@ def update():
 def makeAndPlay(file):
   sound=makeSound(file)
   play(sound)
+def monsterClick(x,y):
+  #two functions inside, one to play sound, and one to animate
+  #Include a file extension
+  makeAndPlay(file)
+  #Add an animation function
 
   
