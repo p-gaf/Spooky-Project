@@ -1,6 +1,6 @@
 import gui
 import timer
-
+import random
 
 window = None
 fadeRectangle = None
@@ -31,5 +31,10 @@ def monsterClick(x,y):
   makeAndPlay(file)
   #Add an animation function
 
-  
+#Insert icons into gui window, 
+creeper=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
+zombie=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
+skeleton=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
+
+
 setup()
