@@ -67,8 +67,10 @@ def cleanup():
 def fadeInRectangle(x,y):
   global isRectangleFading, howFaded
   if isRectangleFading == False:
+    makeAndPlay(getMediaPath("thunder1.wav"))
     isRectangleFading = True
     howFaded = 120
+    fadeRectangle.setColor(gui.Color(0,0,0,255))
 
 def carvePumpkin(x,y):
   global window, carvedPumpkin, isPumpkinCarved, questionIcon
@@ -103,7 +105,6 @@ def update():
       #We're done fading, so stop fading and delete the rectangle.
       isRectangleFading = False
       window.remove(fadeRectangle)
-      del fadeRectangle
       
 
 #make and play function to be activated when a function is clicked on
