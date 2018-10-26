@@ -132,6 +132,6 @@ def createIconsForCreeper(suffix):
 #creeper=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
 #zombie=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
 #skeleton=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
-
+#testcomment
 
 setup()
