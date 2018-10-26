@@ -55,13 +55,13 @@ def cleanup():
   
   if frameTimer:
     frameTimer.stop()
-  del frameTimer
+  frameTimer = None
   
   if fadeRectangle:
     window.remove(fadeRectangle)
-  del fadeRectangle
+  fadeRectangle = None
   
-  del window
+  window = None
 
 #Starts the fade
 def fadeInRectangle(x,y):
