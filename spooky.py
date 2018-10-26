@@ -114,9 +114,19 @@ def makeAndPlay(file):
 
 def monsterClick(x,y):
   #two functions inside, one to play sound, and one to animate
-  #Include a file extension
   makeAndPlay(file)
   #Add an animation function
+#create frames for creeper gif
+def createIconsForCreeper(suffix):
+  output=[]
+  for i in range(0,51):
+    filename="frame_0"+str(i)+"_delay-0.05s.gif"
+    icon=gui.Icon(filename,300)
+    output.append(icon)
+    
+    
+ 
+
 
 #Insert icons into gui window, 
 #creeper=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
