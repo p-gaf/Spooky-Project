@@ -9,18 +9,36 @@ frameTimer = None
 isRectangleFading = False
 howFaded = None
 
+carvedPumpkin = None
+questionIcon = None
+
+isPumpkinCarved = False
+
 #Setup, make everything exist.
 def setup():
-  global window, frameTimer, fadeRectangle
+  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon
   
   cleanup()
 
   setMediaPath(pickAFolder())
   window = gui.Display("Minecard", 640,480)
   
+  baseState = gui.Icon(getMediaPath("baseState.jpg"),640,480)
+  window.add(baseState, 0, 0)
+  
+  carvedPumpkin = gui.Icon(getMediaPath("croppedPumpkinCarved.png"),640,480)
+  
+  pumpkinHitbox = gui.Rectangle(103,272,190,334,gui.Color(0,0,0,0),true,0)
+  pumpkinHitbox.onMouseDown(carvePumpkin)
+  pumpkinHitbox.onMouseEnter(questionOn)
+  pumpkinHitbox.onMouseExit(questionOff)
+  window.add(pumpkinHitbox)
+  
   fadeRectangle = gui.Rectangle(0,0,640,480,gui.Color(0,0,0,255),true,0)
-  fadeRectangle.onMouseDown(fadeInRectangle)
+  fadeRectangle.onMouseEnter(fadeInRectangle)
   window.add(fadeRectangle)
+  
+  questionIcon = gui.Icon(getMediaPath("question.png"), 50, 50)
   
   frameTimer = timer.Timer(1000/60, update, [], true)
   frameTimer.start()
@@ -51,6 +69,22 @@ def fadeInRectangle(x,y):
   if isRectangleFading == False:
     isRectangleFading = True
     howFaded = 120
+
+def carvePumpkin(x,y):
+  global window, carvedPumpkin, isPumpkinCarved, questionIcon
+  window.remove(questionIcon)
+  window.add(carvedPumpkin)
+  isPumpkinCarved = True
+  
+def questionOn(x,y):
+  global window, questionIcon, isPumpkinCarved
+  if(isPumpkinCarved == False):
+    window.add(questionIcon,125,225)
+
+def questionOff(x,y):
+  global window, questionIcon
+  
+  window.remove(questionIcon)
 
 #This runs every frame and checks for things that need to happen, then makes them happen
 def update():
