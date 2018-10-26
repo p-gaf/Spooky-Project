@@ -11,12 +11,13 @@ howFaded = None
 
 carvedPumpkin = None
 questionIcon = None
+musicSound = None
 
 isPumpkinCarved = False
 
 #Setup, make everything exist.
 def setup():
-  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon
+  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, musicSound
   
   cleanup()
 
@@ -42,6 +43,7 @@ def setup():
   
   frameTimer = timer.Timer(1000/60, update, [], true)
   frameTimer.start()
+  musicSound = makeAndPlay(getMediaPath("minecraftmusic.wav"))
   
   #Todo: music stuff. 
   #Make a timer for music that runs every time the music ends
@@ -51,7 +53,7 @@ def setup():
 #Delete everything and make sure we're working from a clean slate.
 #Todo: if anything gets added to setup, make sure to clean it up here!
 def cleanup():
-  global window, frameTimer, fadeRectangle
+  global window, frameTimer, fadeRectangle, musicSound
   
   if frameTimer:
     frameTimer.stop()
@@ -60,6 +62,9 @@ def cleanup():
   if fadeRectangle:
     window.remove(fadeRectangle)
   fadeRectangle = None
+  
+  if not musicSound == None:
+    stopPlaying(musicSound)
   
   window = None
 
