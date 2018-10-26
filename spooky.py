@@ -1,5 +1,6 @@
 import gui
 import timer
+import random
 
 
 window = None
