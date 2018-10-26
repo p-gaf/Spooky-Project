@@ -1,10 +1,14 @@
 from gui import *
 from timer import *
 #create frames for creeper gif
+
+baseMediaPath = None
+
 def createIconsForCreeper():
+  global baseMediaPath
   output=[]
-  for i in range(0,51):
-    filename="frame_"+str(i)+"_delay-0.05s.gif"
+  for i in range(0,2):
+    filename = baseMediaPath + "frame_"+str(i)+"_delay-0.05s.gif"
     icon=Icon(filename)
     output.append(icon)
   return output
@@ -30,6 +34,7 @@ def showNextFrame():
 # make the JES media libraries know where to look
 baseMediaPath = pickAFolder()
 setMediaPath(baseMediaPath)
+
 
 totalFrames=50
 currentFrame=0
