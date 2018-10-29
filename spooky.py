@@ -39,6 +39,9 @@ class Particle:
     self.yVel = initYVel
     self.yAccel = random.randint(8,12)/10.0
     
+    #Keep track of how long the particle has been alive
+    self.timeAlive = 0
+    
     #Keep an internal reference to an icon and add it later
     self.icon = gui.Icon(getMediaPath(imageName))
     window.add(self.icon, self.x, self.y)
@@ -52,16 +55,28 @@ class Particle:
   #Returns:
     #None
   def update(self):
-    #Get rid of the icon where it last was
-    window.remove(self.icon)
+    #Don't Let unnecessary particles stay around,
+    #delete particles that have been around for half
+    #a second.
+    if self.timeAlive <= 30:
+      #Get rid of the icon where it last was
+      window.remove(self.icon)
     
-    #Do some math to find the current velocities and positions.
-    self.yVel = self.yVel + self.yAccel
-    self.x = self.x + self.xVel
-    self.y = self.y + self.yVel
+      #Do some math to find the current velocities and positions.
+      self.yVel = self.yVel + self.yAccel
+      self.x = self.x + self.xVel
+      self.y = self.y + self.yVel
     
-    #Add our icon back in the new position.
-    window.add(self.icon, int(self.x), int(self.y))
+      #Add our icon back in the new position.
+      window.add(self.icon, int(self.x), int(self.y))
+      
+      self.timeAlive = self.timeAlive + 1
+    #If it's been around for that long, remove it from
+    #the window and from the list of extant particles.
+    elif self.timeAlive > 30:
+      window.remove(self.icon)
+      Particle.particles.remove(self)
+      
   
   #getParticles: A class method to return the list of particles, for encapsulation reasons.
   #Arguments:
@@ -138,13 +153,13 @@ def carvePumpkin(x,y):
     window.add(carvedPumpkin)
     isPumpkinCarved = True
     
-    #Create four particles with slightly different x and y velocities to start with.
-    #Each starts at the location of click, then moves downward.
-    #Each uses the same image file, particle.png.
-    Particle(x+103,y+272,-2,-10,"particle.png")
-    Particle(x+103,y+272,-1,-5,"particle.png")
-    Particle(x+103,y+272,1,-5,"particle.png")
-    Particle(x+103,y+272,2,-1,"particle.png")
+  #Create four particles with slightly different x and y velocities to start with.
+  #Each starts at the location of click, then moves downward.
+  #Each uses the same image file, particle.png.
+  Particle(x+103,y+272,random.randint(-30,-10)/10.0,random.randint(-10,-1),"particle.png")
+  Particle(x+103,y+272,random.randint(-30,-10)/10.0,random.randint(-10,-1),"particle.png")
+  Particle(x+103,y+272,random.randint(10,30)/10.0,random.randint(-10,-1),"particle.png")
+  Particle(x+103,y+272,random.randint(10,30)/10.0,random.randint(-10,-1),"particle.png")
   
 def questionOn(x,y):
   global window, questionIcon, isPumpkinCarved
