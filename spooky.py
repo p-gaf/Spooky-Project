@@ -2,6 +2,8 @@ import gui
 import timer
 import random
 
+
+#Initialize global variables for future reference.
 window = None
 fadeRectangle = None
 frameTimer = None
@@ -14,6 +16,62 @@ questionIcon = None
 musicSound = None
 
 isPumpkinCarved = False
+
+#Sorry for the excessive object oriented code here, I wanted to do this effect and had no idea how else to do it. -Brendan.
+class Particle:
+  global window
+  
+  #Classwide variable, contains a list of all currently extant objects of class Particle.
+  particles = []
+  
+  #__init__: Create a new particle and set up the internal variables, as well as adding it to Particle.particles.
+  #Arguments:
+    #initX, type Int: The initial X position of the particle
+    #initY, type Int: The initial Y position of the particle
+    #initXVel, type Float: The initial velocity of the particle on the X axis.
+    #initYVel, type Float: The initial velocity of the particle on the Y axis.
+    #imageName, type String: The name of the image file in the media path.
+  #Returns:
+    #self, type Particle
+  def __init__(self, initX, initY, initXVel, initYVel, imageName):
+    self.x = initX
+    self.y = initY
+    self.xVel = initXVel
+    self.yVel = initYVel
+    self.yAccel = random.randint(8,12)/10.0
+    
+    #Keep an internal reference to an icon and add it later
+    self.icon = gui.Icon(getMediaPath(imageName))
+    window.add(self.icon, self.x, self.y)
+    
+    #Add this particle to a class list of all particles.
+    Particle.particles.append(self)
+    
+  #update: Update the position and icon of the particle.
+  #Arguments:
+    #None
+  #Returns:
+    #None
+  def update(self):
+    #Get rid of the icon where it last was
+    window.remove(self.icon)
+    
+    #Do some math to find the current velocities and positions.
+    self.yVel = self.yVel + self.yAccel
+    self.x = self.x + self.xVel
+    self.y = self.y + self.yVel
+    
+    #Add our icon back in the new position.
+    window.add(self.icon, int(self.x), int(self.y))
+  
+  #getParticles: A class method to return the list of particles, for encapsulation reasons.
+  #Arguments:
+    #None
+  #Returns:
+    #Particle.particles, type list of Particle
+  @classmethod
+  def getParticles(cls):
+    return Particle.particles
 
 #Setup, make everything exist.
 def setup():
@@ -79,14 +137,25 @@ def fadeInRectangle(x,y):
 
 def carvePumpkin(x,y):
   global window, carvedPumpkin, isPumpkinCarved, questionIcon
-  window.remove(questionIcon)
-  window.add(carvedPumpkin)
-  isPumpkinCarved = True
+  if(isPumpkinCarved == False):
+    makeAndPlay(getMediaPath("pumpkinHit.wav"))
+    window.remove(questionIcon)
+    window.add(carvedPumpkin)
+    isPumpkinCarved = True
+    
+    #Create four particles with slightly different x and y velocities to start with.
+    #Each starts at the location of click, then moves downward.
+    #Each uses the same image file, particle.png.
+    Particle(x+103,y+272,-2,-10,"particle.png")
+    Particle(x+103,y+272,-1,-5,"particle.png")
+    Particle(x+103,y+272,1,-5,"particle.png")
+    Particle(x+103,y+272,2,-1,"particle.png")
   
 def questionOn(x,y):
   global window, questionIcon, isPumpkinCarved
   if(isPumpkinCarved == False):
     window.add(questionIcon,125,225)
+    makeAndPlay(getMediaPath("questionSound.wav"))
 
 def questionOff(x,y):
   global window, questionIcon
@@ -110,7 +179,10 @@ def update():
       #We're done fading, so stop fading and delete the rectangle.
       isRectangleFading = False
       window.remove(fadeRectangle)
-      
+  
+  #Run the update() function of every particle that exists currently.
+  for particle in Particle.getParticles():
+    particle.update()
 
 #make and play function to be activated when a function is clicked on
 def makeAndPlay(file):
@@ -129,10 +201,6 @@ def createIconsForCreeper(suffix):
     filename="frame_0"+str(i)+"_delay-0.05s.gif"
     icon=gui.Icon(filename,300)
     output.append(icon)
-    
-    
- 
-
 
 #Insert icons into gui window, 
 #creeper=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
