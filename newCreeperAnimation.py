@@ -1,37 +1,60 @@
 import gui
-import timer
+import time
 
 baseMediaPath=pickAFolder()
 setMediaPath(baseMediaPath)
 
-icon1=gui.Icon(baseMediaPath+"creeper_0.gif")
-icon2=gui.Icon(baseMediaPath+"creeper_1.gif")
-icon3=gui.Icon(baseMediaPath+"creeper_2.gif")
-icon4=gui.Icon(baseMediaPath+"creeper_3.gif")
-
+icon1=gui.Icon(baseMediaPath+"creeper_0.png")
+icon2=gui.Icon(baseMediaPath+"creeper_1.png")
+icon3=gui.Icon(baseMediaPath+"creeper_2.png")
+icon4=gui.Icon(baseMediaPath+"creeper_3.png")
+#create output list
+output=[]
+output.append(icon1)
+output.append(icon2)
+output.append(icon3)
+output.append(icon4)
+#attach the output to frames variable
 #add gui window
-window=Display("Animation",400,400)
-#test 
-window.add(icon1,200,200)
-#seperate functions for adding next frame
-def showFrame(display, frames, n):
-  display.add(frames[n], 0, 0)
+window=gui.Display("Animation",400,400)
+def startAnimation(x,y):
+  while true:
+    window.add(output[1],x,y)
+    window.remove(output[0])
+    time.sleep(1)
+    window.add(output[2],x,y)
+    window.remove(output[1])
+    time.sleep(1)
+    window.add(output[3],x,y)
+    window.remove(output[2])
+    time.sleep(1)
+    window.add(output[0],x,y)
+    window.remove(output[3])
+    time.sleep(1)
   
-def removeFrame(display, frames, n):
-  display.remove(frames[n])
+
+
+#seperate functions for adding next frame
+def showFrame(window, output, n):
+  window.add(output[n], 0, 0)
+  
+def removeFrame(window, output, n):
+  window.remove(output[n])
 
 def showNextFrame():
-  global window, frames, currentFrame, totalFrames
+  global window, output, currentFrame, totalFrames
   
   #increment current frame, but wrap around to 0 if >= totalFrames
   currentFrame = (currentFrame + 1) % totalFrames
   
   #show the new frame, it'll render on top of the old one
-  showFrame(window, frames, currentFrame)
+  showFrame(window, output, currentFrame)
   
   #remove the old one from underneath
-  removeFrame(window, frames, currentFrame - 1)
+  removeFrame(window, output, currentFrame - 1)
 
-
-#function to delete previous frame
-#function to run it all
+#frame variablres
+totalFrames=4
+currentFrame=0
+#animation running program
+animationTimer=Timer(83,showNextFrame(),[],True)
