@@ -11,8 +11,12 @@ frameTimer = None
 isRectangleFading = False
 howFaded = None
 
+houseOpen = None
+isDoorOpen = False
+
 carvedPumpkin = None
 questionIcon = None
+musicSound = None
 
 isPumpkinCarved = False
 
@@ -89,7 +93,7 @@ class Particle:
 
 #Setup, make everything exist.
 def setup():
-  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon
+  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, musicSound
   
   cleanup()
 
@@ -107,6 +111,14 @@ def setup():
   pumpkinHitbox.onMouseExit(questionOff)
   window.add(pumpkinHitbox)
   
+  houseOpen = gui.Icon(getMediaPath("lightOn.png"),640,480)
+  
+  doorHitbox = gui.Rectangle(828,465,912,550,gui.Color(0,0,0,0),true,0)
+  doorHitbox.onMouseDown(openDoor)
+  doorHitbox.onMouseEnter(questionOn)
+  doorHitbox.onMouseExit(questionOff)
+  window.add(doorHitbox)
+  
   fadeRectangle = gui.Rectangle(0,0,640,480,gui.Color(0,0,0,255),true,0)
   fadeRectangle.onMouseEnter(fadeInRectangle)
   window.add(fadeRectangle)
@@ -115,6 +127,7 @@ def setup():
   
   frameTimer = timer.Timer(1000/60, update, [], true)
   frameTimer.start()
+  musicSound = makeAndPlay(getMediaPath("minecraftmusic.wav"))
   
   #Todo: music stuff. 
   #Make a timer for music that runs every time the music ends
@@ -124,7 +137,7 @@ def setup():
 #Delete everything and make sure we're working from a clean slate.
 #Todo: if anything gets added to setup, make sure to clean it up here!
 def cleanup():
-  global window, frameTimer, fadeRectangle
+  global window, frameTimer, fadeRectangle, musicSound
   
   if frameTimer:
     frameTimer.stop()
@@ -133,6 +146,9 @@ def cleanup():
   if fadeRectangle:
     window.remove(fadeRectangle)
   fadeRectangle = None
+  
+  if not musicSound == None:
+    stopPlaying(musicSound)
   
   window = None
 
@@ -153,6 +169,14 @@ def carvePumpkin(x,y):
     window.add(carvedPumpkin)
     isPumpkinCarved = True
     
+def openDoor(x,y):
+  global window, houseOpen, isDoorOpen, questionIcon
+  if(isDoorOpen == False):
+    makeAndPlay(getMediaPath("doorOpen.wav"))
+    window.remove(questionIcon)
+    window.add(houseOpen)
+    isDoorOpen = True
+    
   #Create four particles with slightly different x and y velocities to start with.
   #Each starts at the location of click, then moves downward.
   #Each uses the same image file, particle.png.
@@ -165,6 +189,12 @@ def questionOn(x,y):
   global window, questionIcon, isPumpkinCarved
   if(isPumpkinCarved == False):
     window.add(questionIcon,125,225)
+    makeAndPlay(getMediaPath("questionSound.wav"))
+    
+def questionOn2(x,y):
+  global window, questionIcon, isDoorOpen
+  if(isDoorOpen == False):
+    window.add(questionIcon, 125, 225)
     makeAndPlay(getMediaPath("questionSound.wav"))
 
 def questionOff(x,y):
