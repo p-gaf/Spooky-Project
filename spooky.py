@@ -11,6 +11,9 @@ frameTimer = None
 isRectangleFading = False
 howFaded = None
 
+houseOpen = None
+isDoorOpen = False
+
 carvedPumpkin = None
 questionIcon = None
 musicSound = None
@@ -108,6 +111,14 @@ def setup():
   pumpkinHitbox.onMouseExit(questionOff)
   window.add(pumpkinHitbox)
   
+  houseOpen = gui.Icon(getMediaPath("lightOn.png"),640,480)
+  
+  doorHitbox = gui.Rectangle(828,465,912,550,gui.Color(0,0,0,0),true,0)
+  doorHitbox.onMouseDown(openDoor)
+  doorHitbox.onMouseEnter(questionOn)
+  doorHitbox.onMouseExit(questionOff)
+  window.add(doorHitbox)
+  
   fadeRectangle = gui.Rectangle(0,0,640,480,gui.Color(0,0,0,255),true,0)
   fadeRectangle.onMouseEnter(fadeInRectangle)
   window.add(fadeRectangle)
@@ -158,6 +169,14 @@ def carvePumpkin(x,y):
     window.add(carvedPumpkin)
     isPumpkinCarved = True
     
+def openDoor(x,y):
+  global window, houseOpen, isDoorOpen, questionIcon
+  if(isDoorOpen == False):
+    makeAndPlay(getMediaPath("doorOpen.wav"))
+    window.remove(questionIcon)
+    window.add(houseOpen)
+    isDoorOpen = True
+    
   #Create four particles with slightly different x and y velocities to start with.
   #Each starts at the location of click, then moves downward.
   #Each uses the same image file, particle.png.
@@ -170,6 +189,12 @@ def questionOn(x,y):
   global window, questionIcon, isPumpkinCarved
   if(isPumpkinCarved == False):
     window.add(questionIcon,125,225)
+    makeAndPlay(getMediaPath("questionSound.wav"))
+    
+def questionOn2(x,y):
+  global window, questionIcon, isDoorOpen
+  if(isDoorOpen == False):
+    window.add(questionIcon, 125, 225)
     makeAndPlay(getMediaPath("questionSound.wav"))
 
 def questionOff(x,y):
