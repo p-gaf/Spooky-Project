@@ -11,9 +11,13 @@ frameTimer = None
 isRectangleFading = False
 howFaded = None
 
+houseOpen = None
+isDoorOpen = False
+
 carvedPumpkin = None
 questionIcon = None
 pumpkinHitbox = None
+musicSound = None
 
 isPumpkinCarved = False
 
@@ -90,7 +94,7 @@ class Particle:
 
 #Setup, make everything exist.
 def setup():
-  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, pumpkinHitbox
+  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, pumpkinHitbox, text, musicSound, icon1, creeperX, creeperY, houseOpen
   
   cleanup()
 
@@ -108,24 +112,75 @@ def setup():
   pumpkinHitbox.onMouseExit(questionOff)
   window.add(pumpkinHitbox)
   
+  houseOpen = gui.Icon(getMediaPath("lightOn.png"),640,480)
+  
+  doorHitbox = gui.Rectangle(395,233,479,275,gui.Color(0,0,0,0),true,0)
+  doorHitbox.onMouseDown(openDoor)
+  doorHitbox.onMouseEnter(questionOn2)
+  doorHitbox.onMouseExit(questionOff)
+  window.add(doorHitbox)
+  
   fadeRectangle = gui.Rectangle(0,0,640,480,gui.Color(0,0,0,255),true,0)
   fadeRectangle.onMouseEnter(fadeInRectangle)
   window.add(fadeRectangle)
   
   questionIcon = gui.Icon(getMediaPath("question.png"), 50, 50)
   
+  text = gui.Icon(getMediaPath("text.png"), 500, 57)
+  
   frameTimer = timer.Timer(1000/60, update, [], true)
   frameTimer.start()
+  musicSound = makeAndPlay(getMediaPath("minecraftmusic.wav"))
+  
+  #add creeper
+  
   
   #Todo: music stuff. 
   #Make a timer for music that runs every time the music ends
   #Start it on the fade click
   #Keep track of the same sound file so we can stop it and or start it later.
+#////////////ANIMATION CODE START/////////////////
+icon1=gui.Icon(getMediaPath("creeper_0.png"))
+icon2=gui.Icon(getMediaPath("creeper_1.png"))
+icon3=gui.Icon(getMediaPath("creeper_2.png"))
+icon4=gui.Icon(getMediaPath("creeper_3.png"))
+#create output list
+output=[]
+output.append(icon1)
+output.append(icon2)
+output.append(icon3)
+output.append(icon4)
+#creeper coordinates
+creeperX=400
+creeperY=270
+#Description: Makes the creaper animation run by adding the next frame on top of the previous one and removing the previous frame
+#Arguments: x,y- Location of click
+#Returns: An animated Creeper
+
+def startCreeperAnimation(x,y): 
+  global creeperX, creeperY
+  while true:
+    window.add(output[1],creeperX,creeperY)
+    window.remove(output[0])
+    time.sleep(1)
+    window.add(output[2],creeperX,creeperY)
+    window.remove(output[1])
+    time.sleep(1)
+    window.add(output[3],creeperX,creeperY)
+    window.remove(output[2])
+    time.sleep(1)
+    window.add(output[0],creeperX,creeperY)
+    window.remove(output[3])
+    time.sleep(1)
+    
+  
+
+#////////////ANIMATION CODE END/////////////////
 
 #Delete everything and make sure we're working from a clean slate.
 #Todo: if anything gets added to setup, make sure to clean it up here!
 def cleanup():
-  global window, frameTimer, fadeRectangle, isPumpkinCarved, isRectangleFading, carvedPumpkin, pumpkinHitbox, questionIcon
+  global window, frameTimer, fadeRectangle, isPumpkinCarved, isRectangleFading, carvedPumpkin, pumpkinHitbox, questionIcon, musicSound
   
   isPumpkinCarved = false
   isRectangleFading = false
@@ -149,6 +204,8 @@ def cleanup():
   if questionIcon:
     window.remove(questionIcon)
   questionIcon = None
+  if not musicSound == None:
+    stopPlaying(musicSound)
   
   window = None
 
@@ -169,6 +226,14 @@ def carvePumpkin(x,y):
     window.add(carvedPumpkin)
     isPumpkinCarved = True
     
+def openDoor(x,y):
+  global window, houseOpen, isDoorOpen, questionIcon
+  if(isDoorOpen == False):
+    makeAndPlay(getMediaPath("doorOpen.wav"))
+    window.remove(questionIcon)
+    window.add(houseOpen)
+    isDoorOpen = True
+
   #Create four particles with slightly different x and y velocities to start with.
   #Each starts at the location of click, then moves downward.
   #Each uses the same image file, particle.png.
@@ -182,15 +247,22 @@ def questionOn(x,y):
   if(isPumpkinCarved == False):
     window.add(questionIcon,125,225)
     makeAndPlay(getMediaPath("questionSound.wav"))
+    
+def questionOn2(x,y):
+  global window, questionIcon, isDoorOpen
+  if(isDoorOpen == False):
+    window.add(questionIcon, 410, 180)
+    makeAndPlay(getMediaPath("questionSound.wav"))
 
 def questionOff(x,y):
   global window, questionIcon
   
   window.remove(questionIcon)
+  
 
 #This runs every frame and checks for things that need to happen, then makes them happen
 def update():
-  global fadeRectangle, isRectangleFading, howFaded, window
+  global fadeRectangle, isRectangleFading, isDoorOpen, isPumpkinCarved, howFaded, window, text
   
   #Is our black screen fading in?
   if isRectangleFading == True:
@@ -206,6 +278,10 @@ def update():
       isRectangleFading = False
       window.remove(fadeRectangle)
   
+  #Check to make sure other elements have been clicked before showing text
+  if isDoorOpen == true and isPumpkinCarved == true:
+    window.add(text, 80, 85)
+    
   #Run the update() function of every particle that exists currently.
   for particle in Particle.getParticles():
     particle.update()
@@ -221,17 +297,11 @@ def monsterClick(x,y):
   makeAndPlay(file)
   #Add an animation function
 #create frames for creeper gif
-def createIconsForCreeper(suffix):
-  output=[]
-  for i in range(0,51):
-    filename="frame_0"+str(i)+"_delay-0.05s.gif"
-    icon=gui.Icon(filename,300)
-    output.append(icon)
 
-#Insert icons into gui window, 
-#creeper=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
-#zombie=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
-#skeleton=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
+
+
 #testcomment
 
 setup()
+window.add(icon1,creeperX,creeperY)
+icon1.onMouseDown(startCreeperAnimation)
