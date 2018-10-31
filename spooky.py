@@ -13,6 +13,7 @@ howFaded = None
 
 carvedPumpkin = None
 questionIcon = None
+pumpkinHitbox = None
 
 isPumpkinCarved = False
 
@@ -89,7 +90,7 @@ class Particle:
 
 #Setup, make everything exist.
 def setup():
-  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon
+  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, pumpkinHitbox
   
   cleanup()
 
@@ -124,7 +125,10 @@ def setup():
 #Delete everything and make sure we're working from a clean slate.
 #Todo: if anything gets added to setup, make sure to clean it up here!
 def cleanup():
-  global window, frameTimer, fadeRectangle
+  global window, frameTimer, fadeRectangle, isPumpkinCarved, isRectangleFading, carvedPumpkin, pumpkinHitbox, questionIcon
+  
+  isPumpkinCarved = false
+  isRectangleFading = false
   
   if frameTimer:
     frameTimer.stop()
@@ -133,6 +137,18 @@ def cleanup():
   if fadeRectangle:
     window.remove(fadeRectangle)
   fadeRectangle = None
+  
+  if carvedPumpkin:
+    window.remove(carvedPumpkin)
+  carvedPumpkin = None
+  
+  if pumpkinHitbox:
+    window.remove(pumpkinHitbox)
+  pumpkinHitbox = None
+  
+  if questionIcon:
+    window.remove(questionIcon)
+  questionIcon = None
   
   window = None
 
