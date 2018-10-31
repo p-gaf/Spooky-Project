@@ -1,7 +1,6 @@
 import gui
 import timer
 import random
-import time
 
 
 #Initialize global variables for future reference.
@@ -132,7 +131,7 @@ def setup():
   
   #add creeper
   window.add(icon1,creeperX,creeperY)
-  icon1.onMouseClick(startCreeperAnimation)
+  icon1.onMouseDown(startCreeperAnimation)
   #Todo: music stuff. 
   #Make a timer for music that runs every time the music ends
   #Start it on the fade click
@@ -151,9 +150,14 @@ output.append(icon4)
 #creeper coordinates
 creeperX=400
 creeperY=270
+#Description: Makes the creaper animation run by adding the next frame on top of the previous one and removing the previous frame
+#Arguments: x,y- Location of click
+#Returns: An animated Creeper
+
 def startCreeperAnimation(x,y): 
   global creeperX, creeperY
-  while true:
+  n=0
+  while (n<8):
     window.add(output[1],creeperX,creeperY)
     window.remove(output[0])
     time.sleep(1)
@@ -166,6 +170,7 @@ def startCreeperAnimation(x,y):
     window.add(output[0],creeperX,creeperY)
     window.remove(output[3])
     time.sleep(1)
+    n=n+1
   
 
 #////////////ANIMATION CODE END/////////////////
