@@ -130,8 +130,8 @@ def setup():
   musicSound = makeAndPlay(getMediaPath("minecraftmusic.wav"))
   
   #add creeper
-  window.add(icon1,creeperX,creeperY)
-  icon1.onMouseDown(startCreeperAnimation)
+  
+  
   #Todo: music stuff. 
   #Make a timer for music that runs every time the music ends
   #Start it on the fade click
@@ -156,8 +156,7 @@ creeperY=270
 
 def startCreeperAnimation(x,y): 
   global creeperX, creeperY
-  n=0
-  while (n<8):
+  while true:
     window.add(output[1],creeperX,creeperY)
     window.remove(output[0])
     time.sleep(1)
@@ -170,7 +169,7 @@ def startCreeperAnimation(x,y):
     window.add(output[0],creeperX,creeperY)
     window.remove(output[3])
     time.sleep(1)
-    n=n+1
+    
   
 
 #////////////ANIMATION CODE END/////////////////
@@ -282,3 +281,5 @@ def monsterClick(x,y):
 #testcomment
 
 setup()
+window.add(icon1,creeperX,creeperY)
+icon1.onMouseDown(startCreeperAnimation)
