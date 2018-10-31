@@ -1,5 +1,5 @@
 import gui
-import time
+import timer
 
 baseMediaPath=pickAFolder()
 setMediaPath(baseMediaPath)
@@ -32,5 +32,5 @@ def startAnimation(x,y):
     window.remove(output[3])
     time.sleep(1)
   
-
+startAnimation(0,0)
 
