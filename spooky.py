@@ -19,6 +19,8 @@ questionIcon = None
 pumpkinHitbox = None
 musicSound = None
 
+textShown = False
+
 output = []
 
 isPumpkinCarved = False
@@ -100,7 +102,12 @@ class Particle:
   def getParticles(cls):
     return Particle.particles
 
-#Setup, make everything exist.
+#setup: Initialize all of the variables, icons, objects, and lists that the rest of the program will need, as well
+#as setting up the event handlers for later.
+#Arguments:
+  #None
+#Returns:
+  #None
 def setup():
   global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, pumpkinHitbox, text, musicSound, icon1, creeperX, creeperY, houseOpen, output
   
@@ -141,6 +148,9 @@ def setup():
   creeperX=400
   creeperY=270
 
+  window.remove(icon2)
+  window.remove(icon3)
+  window.remove(icon4)
   window.add(icon1,creeperX,creeperY)
   icon1.onMouseDown(startCreeperAnimation)
 
@@ -158,41 +168,28 @@ def setup():
   
   #add creeper
   
-#Description: Makes the creaper animation run by adding the next frame on top of the previous one and removing the previous frame
+#Description: Sets the creeper animation running.
 #Arguments: x,y- Location of click
-#Returns: An animated Creeper
-
+#Returns: None
 def startCreeperAnimation(x,y): 
   global creeperX, creeperY, creeperAnimating
   if creeperAnimating == False:
     creeperAnimating = True
 
-  ##while true:
-  ##  window.add(output[1],creeperX,creeperY)
-  ##  window.remove(output[0])
-  ##  time.sleep(1)
-  ##  window.add(output[2],creeperX,creeperY)
-  ##  window.remove(output[1])
-  ##  time.sleep(1)
-  ##  window.add(output[3],creeperX,creeperY)
-  ##  window.remove(output[2])
-  ##  time.sleep(1)
-  ##  window.add(output[0],creeperX,creeperY)
-  ##  window.remove(output[3])
-  ##  time.sleep(1)
-    
-  
-
-
-
-#Delete everything and make sure we're working from a clean slate.
-#Todo: if anything gets added to setup, make sure to clean it up here!
+#cleanup: Reset all of the variables and delete instances to objects that no longer exist.
+#Arguments:
+  #None
+#Returns:
+  #None
 def cleanup():
-  global window, frameTimer, fadeRectangle, isPumpkinCarved, isRectangleFading, carvedPumpkin, pumpkinHitbox, questionIcon, musicSound, output
+  global window, frameTimer, fadeRectangle, isPumpkinCarved, isRectangleFading, carvedPumpkin, pumpkinHitbox, questionIcon, musicSound, output, isDoorOpen, creeperFrame, textShown, creeperAnimating
   
-  isPumpkinCarved = false
-  isRectangleFading = false
-  creeperAnimating = false
+  isPumpkinCarved = False
+  isRectangleFading = False
+  isDoorOpen = False
+  creeperAnimating = False
+  creeperFrame = 0
+  textShown = False
   
   if frameTimer:
     frameTimer.stop()
@@ -220,7 +217,13 @@ def cleanup():
 
   window = None
 
-#Starts the fade
+#fadeInRectangle: Starts the initial fadein and plays the thunder sound, also initializes the fading rectangle to the
+#correct initial settings.
+#Arguments:
+  #x, x coordinate of click
+  #y, y coordinate of click
+#Returns:
+  #None
 def fadeInRectangle(x,y):
   global isRectangleFading, howFaded
   if isRectangleFading == False:
@@ -229,6 +232,12 @@ def fadeInRectangle(x,y):
     howFaded = 120
     fadeRectangle.setColor(gui.Color(0,0,0,255))
 
+#carvePumpkin: Changes the pumpkins state to carved, as well as creating four particles to display
+#Arguments:
+  #x, x coordinate of click
+  #y, y coordinate of click
+#Returns:
+  #None
 def carvePumpkin(x,y):
   global window, carvedPumpkin, isPumpkinCarved, questionIcon
   if(isPumpkinCarved == False):
@@ -243,7 +252,13 @@ def carvePumpkin(x,y):
   Particle(x+103,y+272,random.randint(-30,-10)/10.0,random.randint(-10,-1),"particle.png")
   Particle(x+103,y+272,random.randint(10,30)/10.0,random.randint(-10,-1),"particle.png")
   Particle(x+103,y+272,random.randint(10,30)/10.0,random.randint(-10,-1),"particle.png")
-    
+
+#openDoor: Switches the state of the house to lit and door opened.
+#Arguments:
+  #x, x coordinate of click
+  #y, y coordinate of click
+#Returns:
+  #None
 def openDoor(x,y):
   global window, houseOpen, isDoorOpen, questionIcon
   if(isDoorOpen == False):
@@ -251,18 +266,31 @@ def openDoor(x,y):
     window.remove(questionIcon)
     window.add(houseOpen)
     isDoorOpen = True
-  
+
+#questionOn: Shows a questionmark icon over the pumpkin and plays a ding sound.
+#Arguments:
+  #x, x coordinate of click
+  #y, y coordinate of click
+#Returns:
+  #None
 def questionOn(x,y):
   global window, questionIcon, isPumpkinCarved
   if(isPumpkinCarved == False):
     window.add(questionIcon,125,225)
     makeAndPlay(getMediaPath("questionSound.wav"))
-    
+
+#questionOn: Shows a questionmark icon over the door and plays a ding sound.
+#Arguments:
+  #x, x coordinate of click
+  #y, y coordinate of click
+#Returns:
+  #None
 def questionOn2(x,y):
   global window, questionIcon, isDoorOpen
   if(isDoorOpen == False):
     window.add(questionIcon, 410, 180)
     makeAndPlay(getMediaPath("questionSound.wav"))
+
 
 def questionOff(x,y):
   global window, questionIcon
@@ -272,7 +300,7 @@ def questionOff(x,y):
 
 #This runs every frame and checks for things that need to happen, then makes them happen
 def update():
-  global fadeRectangle, isRectangleFading, isDoorOpen, isPumpkinCarved, howFaded, window, text, creeperAnimating, creeperFrame, creeperX, creeperY, output, creeperFrameDelay
+  global fadeRectangle, isRectangleFading, isDoorOpen, isPumpkinCarved, howFaded, window, text, creeperAnimating, creeperFrame, creeperX, creeperY, output, creeperFrameDelay, textShown
   
   #Is our black screen fading in?
   if isRectangleFading == True:
@@ -290,7 +318,9 @@ def update():
   
   #Check to make sure other elements have been clicked before showing text
   if isDoorOpen == true and isPumpkinCarved == true:
-    window.add(text, 80, 85)
+    if textShown == False:
+      window.add(text, 80, 85)
+      textShown = True
     
   #Change the creeper animation.
   if creeperAnimating == True:
@@ -311,15 +341,5 @@ def makeAndPlay(file):
   sound=makeSound(file)
   play(sound)
   return sound
-
-def monsterClick(x,y):
-  #two functions inside, one to play sound, and one to animate
-  makeAndPlay(file)
-  #Add an animation function
-#create frames for creeper gif
-
-
-
-#testcomment
 
 setup()
