@@ -1,6 +1,7 @@
 import gui
 import timer
 import random
+import time
 
 
 #Initialize global variables for future reference.
@@ -93,7 +94,7 @@ class Particle:
 
 #Setup, make everything exist.
 def setup():
-  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, musicSound
+  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, musicSound, icon1, creeperX, creeperY
   
   cleanup()
 
@@ -129,10 +130,45 @@ def setup():
   frameTimer.start()
   musicSound = makeAndPlay(getMediaPath("minecraftmusic.wav"))
   
+  #add creeper
+  window.add(icon1,creeperX,creeperY)
+  icon1.onMouseClick(startCreeperAnimation)
   #Todo: music stuff. 
   #Make a timer for music that runs every time the music ends
   #Start it on the fade click
   #Keep track of the same sound file so we can stop it and or start it later.
+#////////////ANIMATION CODE START/////////////////
+icon1=gui.Icon(getMediaPath("creeper_0.png"))
+icon2=gui.Icon(getMediaPath("creeper_1.png"))
+icon3=gui.Icon(getMediaPath("creeper_2.png"))
+icon4=gui.Icon(getMediaPath("creeper_3.png"))
+#create output list
+output=[]
+output.append(icon1)
+output.append(icon2)
+output.append(icon3)
+output.append(icon4)
+#creeper coordinates
+creeperX=400
+creeperY=270
+def startCreeperAnimation(x,y): 
+  global creeperX, creeperY
+  while true:
+    window.add(output[1],creeperX,creeperY)
+    window.remove(output[0])
+    time.sleep(1)
+    window.add(output[2],creeperX,creeperY)
+    window.remove(output[1])
+    time.sleep(1)
+    window.add(output[3],creeperX,creeperY)
+    window.remove(output[2])
+    time.sleep(1)
+    window.add(output[0],creeperX,creeperY)
+    window.remove(output[3])
+    time.sleep(1)
+  
+
+#////////////ANIMATION CODE END/////////////////
 
 #Delete everything and make sure we're working from a clean slate.
 #Todo: if anything gets added to setup, make sure to clean it up here!
@@ -235,17 +271,9 @@ def monsterClick(x,y):
   makeAndPlay(file)
   #Add an animation function
 #create frames for creeper gif
-def createIconsForCreeper(suffix):
-  output=[]
-  for i in range(0,51):
-    filename="frame_0"+str(i)+"_delay-0.05s.gif"
-    icon=gui.Icon(filename,300)
-    output.append(icon)
 
-#Insert icons into gui window, 
-#creeper=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
-#zombie=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
-#skeleton=gui.Icon(,random.randInt(0,640),random.randInt(0,480))
+
+
 #testcomment
 
 setup()
