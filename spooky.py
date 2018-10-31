@@ -93,7 +93,7 @@ class Particle:
 
 #Setup, make everything exist.
 def setup():
-  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, musicSound, icon1, creeperX, creeperY, houseOpen
+  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, text, musicSound, icon1, creeperX, creeperY, houseOpen
   
   cleanup()
 
@@ -124,6 +124,8 @@ def setup():
   window.add(fadeRectangle)
   
   questionIcon = gui.Icon(getMediaPath("question.png"), 50, 50)
+  
+  text = gui.Icon(getMediaPath("text.png"), 500, 57)
   
   frameTimer = timer.Timer(1000/60, update, [], true)
   frameTimer.start()
@@ -216,7 +218,7 @@ def openDoor(x,y):
     window.remove(questionIcon)
     window.add(houseOpen)
     isDoorOpen = True
-    
+
   #Create four particles with slightly different x and y velocities to start with.
   #Each starts at the location of click, then moves downward.
   #Each uses the same image file, particle.png.
@@ -245,7 +247,7 @@ def questionOff(x,y):
 
 #This runs every frame and checks for things that need to happen, then makes them happen
 def update():
-  global fadeRectangle, isRectangleFading, howFaded, window
+  global fadeRectangle, isRectangleFading, isDoorOpen, isPumpkinCarved, howFaded, window, text
   
   #Is our black screen fading in?
   if isRectangleFading == True:
@@ -261,6 +263,10 @@ def update():
       isRectangleFading = False
       window.remove(fadeRectangle)
   
+  #Check to make sure other elements have been clicked before showing text
+  if isDoorOpen == true and isPumpkinCarved == true:
+    window.add(text, 80, 85)
+    
   #Run the update() function of every particle that exists currently.
   for particle in Particle.getParticles():
     particle.update()
