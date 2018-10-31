@@ -114,9 +114,9 @@ def setup():
   
   houseOpen = gui.Icon(getMediaPath("lightOn.png"),640,480)
   
-  doorHitbox = gui.Rectangle(828,465,912,550,gui.Color(0,0,0,0),true,0)
+  doorHitbox = gui.Rectangle(395,233,479,275,gui.Color(0,0,0,0),true,0)
   doorHitbox.onMouseDown(openDoor)
-  doorHitbox.onMouseEnter(questionOn)
+  doorHitbox.onMouseEnter(questionOn2)
   doorHitbox.onMouseExit(questionOff)
   window.add(doorHitbox)
   
@@ -230,13 +230,14 @@ def questionOn(x,y):
 def questionOn2(x,y):
   global window, questionIcon, isDoorOpen
   if(isDoorOpen == False):
-    window.add(questionIcon, 125, 225)
+    window.add(questionIcon, 410, 180)
     makeAndPlay(getMediaPath("questionSound.wav"))
 
 def questionOff(x,y):
   global window, questionIcon
   
   window.remove(questionIcon)
+  
 
 #This runs every frame and checks for things that need to happen, then makes them happen
 def update():
