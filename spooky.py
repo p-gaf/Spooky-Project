@@ -93,7 +93,7 @@ class Particle:
 
 #Setup, make everything exist.
 def setup():
-  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, musicSound, icon1, creeperX, creeperY
+  global window, frameTimer, fadeRectangle, carvedPumpkin, questionIcon, musicSound, icon1, creeperX, creeperY, houseOpen
   
   cleanup()
 
